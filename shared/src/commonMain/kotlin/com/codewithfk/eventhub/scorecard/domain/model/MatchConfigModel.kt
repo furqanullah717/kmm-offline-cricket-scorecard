@@ -4,8 +4,8 @@ data class MatchConfigModel(
     val matchId: Long,
     val team1Name: String,
     val team2Name: String,
-    val totalOvers: Int,
-    val matchDate: String,
-    val venue: String,
-    val matchFormat: String
+    val totalOvers: Long,
+    val matchDate: String?,
+    val venue: String?,
+    val matchFormat: String?
 )

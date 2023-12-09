@@ -1,8 +1,10 @@
 package com.codewithfk.eventhub.scorecard.domain.data_source
 
 import com.codewithfk.eventhub.scorecard.domain.model.Batsman
+import com.codewithfk.eventhub.scorecard.domain.model.MatchConfigModel
 import com.codewithfk.eventhub.scorecard.domain.model.MatchState
 import com.codewithfk.eventhub.scorecard.domain.model.Player
+import database.MatchConfig
 import kotlinx.coroutines.flow.Flow
 
 interface ScorecardDataSource {
@@ -11,9 +13,9 @@ interface ScorecardDataSource {
         team1Name: String,
         team2Name: String,
         totalOvers: Long,
-        matchDate: String,
-        venue: String,
-        matchFormat: String
+        matchDate: String?,
+        venue: String?,
+        matchFormat: String?
     )
 
     suspend fun getLastEnteredID(): Long
@@ -96,4 +98,6 @@ interface ScorecardDataSource {
     fun getPlayerById(playerId: Long): Flow<Player>
 
     fun getAllPlayers(): Flow<List<Player>>
+
+    fun getAllMatches(): Flow<List<MatchConfigModel>>
 }

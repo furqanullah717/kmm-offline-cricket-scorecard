@@ -2,6 +2,7 @@ package com.codewithfk.eventhub.scorecard.data
 
 import com.codewithfk.eventhub.scorecard.domain.data_source.ScorecardDataSource
 import com.codewithfk.eventhub.scorecard.domain.model.Batsman
+import com.codewithfk.eventhub.scorecard.domain.model.MatchConfigModel
 import com.codewithfk.eventhub.scorecard.domain.model.MatchState
 import com.codewithfk.eventhub.scorecard.domain.model.Player
 import com.codewithfk.scorecard.shared.db.AppDatabase
@@ -20,9 +21,9 @@ class SqlDelightScorecardDataSource(db: AppDatabase) : ScorecardDataSource {
         team1Name: String,
         team2Name: String,
         totalOvers: Long,
-        matchDate: String,
-        venue: String,
-        matchFormat: String
+        matchDate: String?,
+        venue: String?,
+        matchFormat: String?
     ) {
         return queries.insertMatchConfig(
             team1Name, team2Name, totalOvers, matchDate, venue, matchFormat
@@ -225,6 +226,26 @@ class SqlDelightScorecardDataSource(db: AppDatabase) : ScorecardDataSource {
                             totalWickets = it.TotalWickets,
                             matchesPlayed = it.MatchesPlayed,
                             playerRole = it.PlayerRole
+                        )
+                    }
+                }.map { it.await() }
+            }
+        }
+    }
+
+    override fun getAllMatches(): Flow<List<MatchConfigModel>> {
+        return queries.getAllMatches().asFlow().mapToList().map { contactEntities ->
+            supervisorScope {
+                contactEntities.map {
+                    async {
+                        MatchConfigModel(
+                            matchId = it.MatchID,
+                            team1Name = it.Team1Name,
+                            team2Name = it.Team2Name,
+                            totalOvers = it.TotalOvers,
+                            matchDate = it.MatchDate,
+                            venue = it.Venue,
+                            matchFormat = it.MatchFormat
                         )
                     }
                 }.map { it.await() }

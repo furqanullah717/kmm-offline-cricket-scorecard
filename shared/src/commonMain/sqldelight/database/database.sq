@@ -3,9 +3,9 @@ CREATE TABLE MatchConfig (
     Team1Name TEXT NOT NULL,
     Team2Name TEXT NOT NULL,
     TotalOvers INTEGER NOT NULL,
-    MatchDate TEXT NOT NULL,
-    Venue TEXT NOT NULL,
-    MatchFormat TEXT NOT NULL
+    MatchDate TEXT ,
+    Venue TEXT ,
+    MatchFormat TEXT
 );
 
 -- Table for storing ball-by-ball information
@@ -215,6 +215,10 @@ SELECT * FROM Players WHERE PlayerID = ?;
 -- Get all players
 getAllPlayers:
 SELECT * FROM Players;
+
+getAllMatches:
+SELECT * FROM MatchConfig;
+
 
 getLastInsertedConnectionId:
 SELECT last_insert_rowid();

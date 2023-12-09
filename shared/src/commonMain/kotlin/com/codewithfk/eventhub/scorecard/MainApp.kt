@@ -30,6 +30,9 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.codewithfk.eventhub.core.presentation.stringResource
 import com.codewithfk.eventhub.di.AppModule
+import com.codewithfk.eventhub.scorecard.presentation.home.HomeScreen
+import com.codewithfk.eventhub.scorecard.presentation.match_screen.MatchScreen
+import com.codewithfk.eventhub.scorecard.presentation.new_match_screen.NewMatchScreen
 import com.codewithfk.eventhub.scorecard.splash.SplashScreen
 import com.codewithfk.eventhub.theme.AppTheme
 import com.codewithfk.goodnight.MR
@@ -55,7 +58,7 @@ fun App(
             val home = stringResource(MR.strings.text_home)
             val showBottomBar = remember { mutableStateOf(false) }
             val selectedTab = remember { mutableStateOf(home) }
-            Scaffold( bottomBar = {
+            Scaffold(bottomBar = {
                 AnimatedVisibility(
                     showBottomBar.value, enter = fadeIn(), exit = fadeOut()
                 ) {
@@ -74,7 +77,10 @@ fun App(
                                         navigator.navigate("/home")
                                         selectedTab.value = home
                                     }
-                                }, string = home, vector = Icons.Default.Home, selectedTab.value == home
+                                },
+                                string = home,
+                                vector = Icons.Default.Home,
+                                selectedTab.value == home
                             )
                         }
                     }
@@ -124,6 +130,33 @@ fun App(
                         showBottomBar.value = true
                         HomeScreen(appModule, navigator)
                     }
+
+                    scene(
+                        // Scene's route path
+                        route = "/new_match",
+                        // Navigation transition for this scene, this is optional
+                        navTransition = NavTransition(
+                            createTransition = fadeIn(),
+                            destroyTransition = fadeOut()
+                        )
+                    ) {
+                        showBottomBar.value = false
+                        NewMatchScreen(appModule, navigator)
+                    }
+                    scene(
+                        // Scene's route path
+                        route = "/match_screen",
+                        // Navigation transition for this scene, this is optional
+                        navTransition = NavTransition(
+                            createTransition = fadeIn(),
+                            destroyTransition = fadeOut()
+                        )
+                    ) {
+                        showBottomBar.value = false
+                        MatchScreen(appModule, navigator)
+                    }
+
+
                 }
             }
         }

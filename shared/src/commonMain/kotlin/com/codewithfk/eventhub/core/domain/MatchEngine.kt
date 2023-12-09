@@ -16,9 +16,9 @@ class MatchEngine(private val dataSource: ScorecardDataSource) {
         team1Name: String,
         team2Name: String,
         totalOvers: Long,
-        matchDate: String,
-        venue: String,
-        matchFormat: String
+        matchDate: String?,
+        venue: String?,
+        matchFormat: String?
     ): Long {
 
         dataSource.insertMatchConfig(
