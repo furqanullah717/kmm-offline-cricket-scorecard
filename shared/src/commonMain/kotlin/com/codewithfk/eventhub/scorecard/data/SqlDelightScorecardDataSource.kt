@@ -29,6 +29,10 @@ class SqlDelightScorecardDataSource(db: AppDatabase) : ScorecardDataSource {
         )
     }
 
+    override suspend fun getLastEnteredID(): Long {
+        return queries.getLastInsertedConnectionId().executeAsOne()
+    }
+
     override suspend fun insertBallDetails(
         matchId: Long,
         overNumber: Long,
@@ -193,7 +197,18 @@ class SqlDelightScorecardDataSource(db: AppDatabase) : ScorecardDataSource {
     }
 
     override fun getPlayerById(playerId: Long): Flow<Player> {
-        return queries.getPlayerById(playerId).asFlow().mapToOne()
+        return queries.getPlayerById(playerId).asFlow().mapToOne().map {
+            Player(
+                playerId = it.PlayerID,
+                name = it.Name,
+                battingAverage = it.BattingAverage,
+                bowlingAverage = it.BowlingAverage,
+                totalRuns = it.TotalRuns,
+                totalWickets = it.TotalWickets,
+                matchesPlayed = it.MatchesPlayed,
+                playerRole = it.PlayerRole
+            )
+        }
     }
 
     override fun getAllPlayers(): Flow<List<Player>> {

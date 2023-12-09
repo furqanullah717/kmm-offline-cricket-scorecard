@@ -16,6 +16,8 @@ interface ScorecardDataSource {
         matchFormat: String
     )
 
+    suspend fun getLastEnteredID(): Long
+
     suspend fun insertBallDetails(
         matchId: Long,
         overNumber: Long,

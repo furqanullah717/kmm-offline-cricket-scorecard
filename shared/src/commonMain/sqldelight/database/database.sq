@@ -215,3 +215,6 @@ SELECT * FROM Players WHERE PlayerID = ?;
 -- Get all players
 getAllPlayers:
 SELECT * FROM Players;
+
+getLastInsertedConnectionId:
+SELECT last_insert_rowid();
