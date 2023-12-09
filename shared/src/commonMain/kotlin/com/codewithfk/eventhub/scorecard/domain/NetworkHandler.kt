@@ -1,4 +1,4 @@
-package com.codewithfk.eventhub.event.domain
+package com.codewithfk.eventhub.scorecard.domain
 
 import com.codewithfk.eventhub.core.domain.httpClient
 import io.ktor.client.call.body

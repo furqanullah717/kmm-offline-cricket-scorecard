@@ -4,6 +4,7 @@ plugins {
     id("org.jetbrains.compose")
     id("dev.icerock.mobile.multiplatform-resources")
     id("kotlinx-serialization")
+    id("com.squareup.sqldelight")
 }
 
 @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
@@ -49,7 +50,7 @@ kotlin {
                 implementation(compose.materialIconsExtended)
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
-                api("moe.tlaster:precompose:1.5.4")
+                api("moe.tlaster:precompose:1.5.8")
 
                 api("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
 
@@ -67,6 +68,10 @@ kotlin {
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serializationVersion")
+
+                //sqldeligh
+                implementation("com.squareup.sqldelight:runtime:1.5.5")
+                implementation("com.squareup.sqldelight:coroutines-extensions:1.5.5")
             }
         }
         val commonTest by getting {
@@ -80,6 +85,7 @@ kotlin {
                 implementation("androidx.appcompat:appcompat:1.6.1")
                 implementation("androidx.activity:activity-compose:1.7.2")
                 implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
+                implementation("com.squareup.sqldelight:android-driver:1.5.5")
 
             }
         }
@@ -90,6 +96,7 @@ kotlin {
         val iosMain by getting {
             dependencies {
                 implementation("io.ktor:ktor-client-darwin:$ktorVersion")
+                implementation("com.squareup.sqldelight:native-driver:1.5.5")
             }
             dependsOn(commonMain)
             iosX64Main.dependsOn(this)
@@ -109,10 +116,17 @@ kotlin {
 }
 
 android {
-    namespace = "com.codewithfk.eventhub"
+    namespace = "com.codewithfk.scorecard"
     compileSdk = 33
     defaultConfig {
         minSdk = 24
+    }
+}
+sqldelight {
+    database("AppDatabase") {
+        packageName = "com.codewithfk.scorecard.shared.db"
+        sourceFolders = listOf("sqldelight")
+        linkSqlite = true
     }
 }
 

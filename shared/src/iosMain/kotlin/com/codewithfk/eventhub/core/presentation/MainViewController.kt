@@ -1,13 +1,13 @@
 package com.codewithfk.eventhub.core.presentation
 
 
+import androidx.compose.ui.window.ComposeUIViewController
 import com.codewithfk.eventhub.di.AppModule
-import com.codewithfk.eventhub.event.App
-import moe.tlaster.precompose.PreComposeApplication
+import com.codewithfk.eventhub.scorecard.App
 import platform.UIKit.UIScreen
 import platform.UIKit.UIUserInterfaceStyle
 
-fun MainViewController() = PreComposeApplication() {
+fun MainViewController() = ComposeUIViewController  {
     val isDarkTheme =
         UIScreen.mainScreen.traitCollection.userInterfaceStyle ==
                 UIUserInterfaceStyle.UIUserInterfaceStyleDark

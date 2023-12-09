@@ -1,0 +1,217 @@
+CREATE TABLE MatchConfig (
+    MatchID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Team1Name TEXT NOT NULL,
+    Team2Name TEXT NOT NULL,
+    TotalOvers INTEGER NOT NULL,
+    MatchDate TEXT NOT NULL,
+    Venue TEXT NOT NULL,
+    MatchFormat TEXT NOT NULL
+);
+
+-- Table for storing ball-by-ball information
+CREATE TABLE BallByBall (
+    BallID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    MatchID INTEGER NOT NULL,
+    OverNumber INTEGER NOT NULL,
+    BallNumber INTEGER NOT NULL,
+    BatsmanID INTEGER NOT NULL,
+    BowlerID INTEGER NOT NULL,
+    RunsScored INTEGER NOT NULL,
+    ExtraType TEXT,
+    ExtraRuns INTEGER,
+    ExtraDetails TEXT,  -- Detailed extra information
+    WicketType TEXT,
+    WicketDetails TEXT, -- Detailed wicket information
+    PlayerDismissed INTEGER,
+    FOREIGN KEY(MatchID) REFERENCES MatchConfig(MatchID)
+);
+
+-- Table for storing over information
+CREATE TABLE OversInfo (
+    OverID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    MatchID INTEGER NOT NULL,
+    OverNumber INTEGER NOT NULL,
+    BowlerID INTEGER NOT NULL,
+    RunsConceded INTEGER NOT NULL,
+    WicketsTaken INTEGER NOT NULL,
+    ExtrasGiven INTEGER NOT NULL,
+    ValidBallsBowled INTEGER NOT NULL,
+    IsCompleted INTEGER NOT NULL,
+    FOREIGN KEY(MatchID) REFERENCES MatchConfig(MatchID)
+);
+
+-- Query to add a new match configuration
+insertMatchConfig:
+INSERT INTO MatchConfig (
+    Team1Name,
+    Team2Name,
+    TotalOvers,
+    MatchDate,
+    Venue,
+    MatchFormat
+) VALUES (?, ?, ?, ?, ?, ?);
+
+-- Query to add ball-by-ball details
+insertBallDetails:
+INSERT INTO BallByBall (
+    MatchID,
+    OverNumber,
+    BallNumber,
+    BatsmanID,
+    BowlerID,
+    RunsScored,
+    ExtraType,
+    ExtraRuns,
+    ExtraDetails,
+    WicketType,
+    WicketDetails,
+    PlayerDismissed
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+-- Query to add over information
+insertOverInfo:
+INSERT INTO OversInfo (
+    MatchID,
+    OverNumber,
+    BowlerID,
+    RunsConceded,
+    WicketsTaken,
+    ExtrasGiven,
+    ValidBallsBowled,
+    IsCompleted
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+
+-- Query to get all matches
+selectAllMatches:
+SELECT * FROM MatchConfig;
+
+-- Query to get ball-by-ball details for a specific match
+selectBallByBallForMatch:
+SELECT * FROM BallByBall WHERE MatchID = ?;
+
+-- Query to get over information for a specific match
+selectOverInfoForMatch:
+SELECT * FROM OversInfo WHERE MatchID = ?;
+
+-- Update ball details with wicket and extra info
+updateBallDetails:
+UPDATE BallByBall
+SET
+    OverNumber = ?,
+    BallNumber = ?,
+    BatsmanID = ?,
+    BowlerID = ?,
+    RunsScored = ?,
+    ExtraType = ?,
+    ExtraRuns = ?,
+    ExtraDetails = ?,
+    WicketType = ?,
+    WicketDetails = ?,
+    PlayerDismissed = ?
+WHERE BallID = ?;
+
+CREATE TABLE Batsmen (
+    BatsmanID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Name TEXT NOT NULL,
+    Runs INTEGER NOT NULL DEFAULT 0,
+    BallsFaced INTEGER NOT NULL DEFAULT 0,
+    Fours INTEGER NOT NULL DEFAULT 0,
+    Sixes INTEGER NOT NULL DEFAULT 0,
+    StrikeRate REAL NOT NULL DEFAULT 0.0
+);
+
+CREATE TABLE MatchState (
+    StateID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    MatchID INTEGER NOT NULL,
+    TotalScore INTEGER NOT NULL DEFAULT 0,
+    WicketsFallen INTEGER NOT NULL DEFAULT 0,
+    OversBowled REAL NOT NULL DEFAULT 0.0,
+    CurrentBatsmanOneID INTEGER,
+    CurrentBatsmanTwoID INTEGER,
+    CurrentBowlerID INTEGER,
+    FOREIGN KEY(MatchID) REFERENCES MatchConfig(MatchID),
+    FOREIGN KEY(CurrentBatsmanOneID) REFERENCES Batsmen(BatsmanID),
+    FOREIGN KEY(CurrentBatsmanTwoID) REFERENCES Batsmen(BatsmanID),
+    FOREIGN KEY(CurrentBowlerID) REFERENCES Players(PlayerID)  -- Assuming Players table exists for bowlers
+);
+
+insertBatsman:
+INSERT INTO Batsmen (Name) VALUES (?);
+updateBatsmanStats:
+UPDATE Batsmen
+SET
+    Runs = ?,
+    BallsFaced = ?,
+    Fours = ?,
+    Sixes = ?,
+    StrikeRate = ?
+WHERE BatsmanID = ?;
+
+insertMatchState:
+INSERT INTO MatchState (
+    MatchID,
+    CurrentBatsmanOneID,
+    CurrentBatsmanTwoID,
+    CurrentBowlerID
+) VALUES (?, ?, ?, ?);
+
+updateMatchState:
+UPDATE MatchState
+SET
+    TotalScore = ?,
+    WicketsFallen = ?,
+    OversBowled = ?,
+    CurrentBatsmanOneID = ?,
+    CurrentBatsmanTwoID = ?,
+    CurrentBowlerID = ?
+WHERE StateID = ?;
+
+getBatsman:
+SELECT * FROM Batsmen WHERE BatsmanID = ?;
+
+getCurrentMatchState:
+SELECT * FROM MatchState WHERE MatchID = ?;
+
+CREATE TABLE Players (
+    PlayerID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Name TEXT NOT NULL,
+    BattingAverage REAL,
+    BowlingAverage REAL,
+    TotalRuns INTEGER,
+    TotalWickets INTEGER,
+    MatchesPlayed INTEGER,
+    PlayerRole TEXT  -- Can be 'Batsman', 'Bowler', or 'Allrounder'
+);
+
+-- Insert a new player
+insertPlayer:
+INSERT INTO Players (
+    Name,
+    BattingAverage,
+    BowlingAverage,
+    TotalRuns,
+    TotalWickets,
+    MatchesPlayed,
+    PlayerRole
+) VALUES (?, ?, ?, ?, ?, ?, ?);
+
+-- Update a player's details
+updatePlayer:
+UPDATE Players
+SET
+    Name = ?,
+    BattingAverage = ?,
+    BowlingAverage = ?,
+    TotalRuns = ?,
+    TotalWickets = ?,
+    MatchesPlayed = ?,
+    PlayerRole = ?
+WHERE PlayerID = ?;
+
+-- Get a player by ID
+getPlayerById:
+SELECT * FROM Players WHERE PlayerID = ?;
+
+-- Get all players
+getAllPlayers:
+SELECT * FROM Players;

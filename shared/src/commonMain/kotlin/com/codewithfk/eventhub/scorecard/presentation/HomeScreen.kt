@@ -1,4 +1,4 @@
-package com.codewithfk.eventhub.event
+package com.codewithfk.eventhub.scorecard
 
 import androidx.compose.runtime.Composable
 import com.codewithfk.eventhub.di.AppModule
