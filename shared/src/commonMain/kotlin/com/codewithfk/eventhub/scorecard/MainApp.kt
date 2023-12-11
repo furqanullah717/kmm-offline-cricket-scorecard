@@ -155,8 +155,6 @@ fun App(
                         showBottomBar.value = false
                         MatchScreen(appModule, navigator)
                     }
-
-
                 }
             }
         }

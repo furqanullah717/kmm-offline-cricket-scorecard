@@ -1,5 +1,6 @@
 package com.codewithfk.eventhub.scorecard.presentation.home
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -45,7 +46,9 @@ fun HomeScreen(appModule: AppModule, navigator: Navigator) {
             }
 
             items(list.value) { match ->
-                Column(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+                Column(modifier = Modifier.fillMaxWidth().padding(8.dp).clickable{
+                    navigator.navigate("/match_screen")
+                }) {
                     Text(text = match.team1Name + " vs " + match.team2Name)
                     Text(text = match.totalOvers.toString() + " Overs")
                     match.matchDate?.toLongOrNull()?.let {
